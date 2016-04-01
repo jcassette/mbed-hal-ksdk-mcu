@@ -49,7 +49,7 @@ void port_mode(port_t *obj, PinMode mode) {
 }
 
 void port_dir(port_t *obj, PinDirection dir) {
-    uint32_t port_addrs[] = PORT_BASE_ADDRS;
+    uint32_t port_addrs[] = GPIO_BASE_ADDRS;
     uint32_t direction = GPIO_HAL_GetPortDir(port_addrs[obj->port]);
     switch (dir) {
         case PIN_INPUT :
@@ -64,13 +64,13 @@ void port_dir(port_t *obj, PinDirection dir) {
 }
 
 void port_write(port_t *obj, int value) {
-    uint32_t port_addrs[] = PORT_BASE_ADDRS;
+    uint32_t port_addrs[] = GPIO_BASE_ADDRS;
     uint32_t input = GPIO_HAL_ReadPortInput(port_addrs[obj->port]) & ~obj->mask;
     GPIO_HAL_WritePortOutput(port_addrs[obj->port], input | (uint32_t)(value & obj->mask));
 }
 
 int port_read(port_t *obj) {
-    uint32_t port_addrs[] = PORT_BASE_ADDRS;
+    uint32_t port_addrs[] = GPIO_BASE_ADDRS;
     return (int)(GPIO_HAL_ReadPortInput(port_addrs[obj->port]) & obj->mask);
 }
 
