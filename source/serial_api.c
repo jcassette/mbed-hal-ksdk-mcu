@@ -524,6 +524,39 @@ static void serial_rx_enable_interrupt(serial_t *obj, uint32_t handler, uint8_t 
     serial_irq_set(obj, (SerialIrq)0, enable);
 }
 
+/*
+ * Only hardware flow control is implemented in this API.
+ */
+void serial_set_flow_control(serial_t *obj, FlowControl type, PinName rxflow, PinName txflow)
+{
+    switch(type) {
+        case FlowControlRTS:
+            pinmap_pinout(rxflow, PinMap_UART_RX);
+            UART_HAL_SetReceiverRtsCmd(obj->serial.address, true);
+            break;
+
+        case FlowControlCTS:
+            pinmap_pinout(txflow, PinMap_UART_TX);
+            UART_HAL_SetTransmitterCtsCmd(obj->serial.address, true);
+            break;
+
+        case FlowControlRTSCTS:
+        	pinmap_pinout(rxflow, PinMap_UART_RX);
+        	pinmap_pinout(txflow, PinMap_UART_TX);
+        	UART_HAL_SetReceiverRtsCmd(obj->serial.address, true);
+        	UART_HAL_SetTransmitterCtsCmd(obj->serial.address, true);
+        	break;
+
+        case FlowControlNone:
+        	UART_HAL_SetReceiverRtsCmd(obj->serial.address, false);
+        	UART_HAL_SetTransmitterCtsCmd(obj->serial.address, false);
+            break;
+
+        default:
+            break;
+    }
+}
+
 int serial_tx_asynch(serial_t *obj, void *tx, size_t tx_length, uint8_t tx_width, uint32_t handler, uint32_t event, DMAUsage hint)
 {
     (void)hint; //Only IRQ is supported
