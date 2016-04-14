@@ -66,7 +66,7 @@ uint16_t analogin_read_u16(analogin_t *obj) {
     uint32_t instance = obj->adc >> ADC_INSTANCE_SHIFT;
     uint32_t adc_addrs[] = ADC_BASE_ADDRS;
     /* sw trigger (SC1A) */
-    ADC_HAL_ConfigChn(adc_addrs[instance], 0, false, false, obj->adc & 0xF);
+    ADC_HAL_ConfigChn(adc_addrs[instance], 0, false, false, obj->adc & 0x1F);
     while (!ADC_HAL_GetChnConvCompletedCmd(adc_addrs[instance], 0));
     return ADC_HAL_GetChnConvValueRAW(adc_addrs[instance], 0);
 }
